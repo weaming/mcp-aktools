@@ -13,8 +13,9 @@ WORKDIR /app
 COPY . .
 
 RUN apt update && apt install -y --no-install-recommends netcat-openbsd
+ENV UV_INDEX_URL=https://mirrors.ustc.edu.cn/pypi/simple
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev
+    uv sync --no-dev
 
 CMD ["uv", "run", "-m", "mcp_aktools"]
 HEALTHCHECK --interval=1m --start-period=30s CMD nc -zn 0.0.0.0 $PORT || exit 1
