@@ -15,6 +15,15 @@ from .cache import CacheKey
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(logging.INFO)
 
+# Patch: eastmoney API endpoint changed - redirect push2 subdomains to push2delay
+_orig_send = requests.adapters.HTTPAdapter.send
+def _patched_send(self, request, *args, **kwargs):
+    url = request.url
+    if url and "push2.eastmoney.com" in url:
+        request.url = url.replace("push2.eastmoney.com", "push2delay.eastmoney.com")
+    return _orig_send(self, request, *args, **kwargs)
+requests.adapters.HTTPAdapter.send = _patched_send
+
 mcp = FastMCP(name="mcp-aktools", version="0.1.15")
 
 field_symbol = Field(description="股票代码")
