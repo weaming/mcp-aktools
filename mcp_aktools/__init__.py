@@ -187,6 +187,8 @@ def stock_indicators_a(
     symbol: str = field_symbol,
 ):
     dfs = ak_cache(ak.stock_financial_abstract_ths, symbol=symbol)
+    if dfs is None:
+        return f"Failed to fetch data for {symbol}"
     keys = dfs.to_csv(index=False, float_format="%.3f").strip().split("\n")
     return "\n".join([keys[0], *keys[-15:]])
 
@@ -199,6 +201,8 @@ def stock_indicators_hk(
     symbol: str = field_symbol,
 ):
     dfs = ak_cache(ak.stock_financial_hk_analysis_indicator_em, symbol=symbol, indicator="报告期")
+    if dfs is None:
+        return f"Failed to fetch data for {symbol}"
     keys = dfs.to_csv(index=False, float_format="%.3f").strip().split("\n")
     return "\n".join(keys[0:15])
 
@@ -211,6 +215,8 @@ def stock_indicators_us(
     symbol: str = field_symbol,
 ):
     dfs = ak_cache(ak.stock_financial_us_analysis_indicator_em, symbol=symbol, indicator="单季报")
+    if dfs is None:
+        return f"Failed to fetch data for {symbol}"
     keys = dfs.to_csv(index=False, float_format="%.3f").strip().split("\n")
     return "\n".join(keys[0:15])
 
